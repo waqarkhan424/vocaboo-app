@@ -1,11 +1,12 @@
 import { fetchTopics, Topic } from "@/lib/api";
+import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { ActivityIndicator, FlatList, Pressable, Text, View } from "react-native";
 
 // Map slugs to display labels
 const TOPIC_LABELS: Record<string, string> = {
-  all: "Total Words",            //  virtual total
-  "all-words": "All Words",      //  actual topic
+  all: "Total Words",            // virtual total
+  "all-words": "All Words",      // actual topic
   "css-dawn-vocabulary": "Css Dawn Vocabulary",
   "essential-words": "Essential Words",
 };
@@ -13,9 +14,7 @@ const TOPIC_LABELS: Record<string, string> = {
 // Fallback pretty label for unknown slugs
 function prettyTopic(slug: string) {
   if (TOPIC_LABELS[slug]) return TOPIC_LABELS[slug];
-  return slug
-    .replace(/-/g, " ")
-    .replace(/\b\w/g, (c) => c.toUpperCase()); // Title Case
+  return slug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
 export default function Home() {
@@ -55,7 +54,15 @@ export default function Home() {
         data={topics}
         keyExtractor={(i) => i.topic}
         renderItem={({ item }) => (
-          <Pressable className="rounded-2xl p-4 mb-3 bg-gray-50 border border-gray-200">
+          <Pressable
+            className="rounded-2xl p-4 mb-3 bg-gray-50 border border-gray-200"
+            onPress={() =>
+              router.push({
+                pathname: "/topic/[slug]",
+                params: { slug: item.topic }, // typed & safe
+              })
+            }
+          >
             <Text className="text-lg font-semibold">{prettyTopic(item.topic)}</Text>
             <Text className="text-gray-500">{item.count} words</Text>
           </Pressable>
