@@ -20,7 +20,7 @@ type Props = {
   total: number;
 
   // list ref for scroll-to-top
-  listRef: RefObject<FlatList<Word> | null>; //  allow null
+  listRef: RefObject<FlatList<Word> | null>; // allow null
 };
 
 export default function WordsList({
@@ -65,6 +65,7 @@ export default function WordsList({
           totalPages={totalPages}
           onPrev={() => setPage(Math.max(1, page - 1))}
           onNext={() => setPage(Math.min(totalPages, page + 1))}
+          onJump={(n) => setPage(n)} //  NEW
           showingFrom={showingFrom}
           showingTo={showingTo}
           total={total}
