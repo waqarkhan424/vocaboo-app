@@ -2,7 +2,7 @@ import { fetchWords, Paged, Word } from "@/lib/api";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { FlatList } from "react-native";
 
-// Map slugs to display labels (same mapping used elsewhere)
+// Canonical topic labels + order for the chips
 const TOPIC_LABELS: Record<string, string> = {
   all: "Total Words",
   "all-words": "All Words",
@@ -10,13 +10,20 @@ const TOPIC_LABELS: Record<string, string> = {
   "essential-words": "Essential Words",
 };
 
+// The order they appear in the switcher
+export const TOPIC_KEYS = ["all", "all-words", "css-dawn-vocabulary", "essential-words"] as const;
+
 export function prettyTopic(slug: string) {
   if (TOPIC_LABELS[slug]) return TOPIC_LABELS[slug];
   return slug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
-export default function useTopicWords(slug?: string) {
-  const title = useMemo(() => prettyTopic(String(slug || "")), [slug]);
+export default function useTopicWords(initialSlug?: string) {
+  // Determine the initial topic (from URL if valid, else first)
+  const initial = (initialSlug && TOPIC_LABELS[initialSlug]) ? initialSlug : TOPIC_KEYS[0];
+
+  const [activeTopic, setActiveTopic] = useState<string>(initial);
+  const title = useMemo(() => prettyTopic(activeTopic), [activeTopic]);
 
   // Filters + pagination state
   const [q, setQ] = useState("");
@@ -32,18 +39,16 @@ export default function useTopicWords(slug?: string) {
 
   const listRef = useRef<FlatList<Word> | null>(null);
 
-
   const totalPages = Math.max(1, Math.ceil(total / Math.max(1, limit)));
   const showingFrom = total === 0 ? 0 : (page - 1) * limit + 1;
   const showingTo = Math.min(page * limit, total);
 
   // Core loader
   const load = async (targetPage: number) => {
-    if (!slug) return;
     try {
       setLoading(true);
       const res: Paged<Word> = await fetchWords({
-        topic: String(slug),
+        topic: activeTopic, // 🔑 load for current topic
         q,
         page: targetPage,
         limit,
@@ -60,17 +65,25 @@ export default function useTopicWords(slug?: string) {
     }
   };
 
-  // Topic change → reset
+  // If URL slug changes during navigation, adopt it as the active topic (if valid)
+  useEffect(() => {
+    if (initialSlug && TOPIC_LABELS[initialSlug]) {
+      setActiveTopic(initialSlug);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialSlug]);
+
+  // When active topic changes → reset and load first page
   useEffect(() => {
     setItems([]);
     setPage(1);
     setTotal(0);
     setErr(null);
-    if (slug) load(1);
+    load(1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [slug]);
+  }, [activeTopic]);
 
-  // Debounce search
+  // Debounce search → reset to page 1
   useEffect(() => {
     const t = setTimeout(() => {
       setPage(1);
@@ -82,7 +95,6 @@ export default function useTopicWords(slug?: string) {
 
   // Change page
   useEffect(() => {
-    if (!slug) return;
     load(page);
     listRef.current?.scrollToOffset({ offset: 0, animated: true });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -100,14 +112,27 @@ export default function useTopicWords(slug?: string) {
     load(page);
   };
 
+  // Build topics array for the switcher
+  const topics = useMemo(
+    () => TOPIC_KEYS.map((key) => ({ key, label: prettyTopic(key) })),
+    []
+  );
+
   return {
+    // topic switching
+    topics,
+    activeTopic,
+    setActiveTopic,
+
     // display
     title,
+
     // filters
     q,
     setQ,
     limit,
     setLimit,
+
     // pagination
     page,
     setPage,
@@ -115,12 +140,14 @@ export default function useTopicWords(slug?: string) {
     totalPages,
     showingFrom,
     showingTo,
+
     // data
     items,
     loading,
     refreshing,
     err,
     onRefresh,
+
     // list ref for scrolling
     listRef,
   };
