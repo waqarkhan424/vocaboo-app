@@ -50,7 +50,7 @@ export default function Home() {
 
   return (
     <View className="flex-1 bg-white p-4">
-      <Text className="text-2xl font-bold mb-4">Vocabulary Topics</Text>
+      <Text className="text-2xl font-bold mb-4">Explore Vocabulary</Text>
       <FlatList
         data={topics}
         keyExtractor={(i) => i.topic}
