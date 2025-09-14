@@ -20,7 +20,7 @@ type Props = {
   total: number;
 
   // list ref for scroll-to-top
-  listRef: RefObject<FlatList<Word>>;
+  listRef: RefObject<FlatList<Word> | null>; //  allow null
 };
 
 export default function WordsList({
