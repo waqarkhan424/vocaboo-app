@@ -2,6 +2,22 @@ import { fetchTopics, Topic } from "@/lib/api";
 import { useEffect, useState } from "react";
 import { ActivityIndicator, FlatList, Pressable, Text, View } from "react-native";
 
+// Map slugs to display labels
+const TOPIC_LABELS: Record<string, string> = {
+  all: "Total Words",            //  virtual total
+  "all-words": "All Words",      //  actual topic
+  "css-dawn-vocabulary": "Css Dawn Vocabulary",
+  "essential-words": "Essential Words",
+};
+
+// Fallback pretty label for unknown slugs
+function prettyTopic(slug: string) {
+  if (TOPIC_LABELS[slug]) return TOPIC_LABELS[slug];
+  return slug
+    .replace(/-/g, " ")
+    .replace(/\b\w/g, (c) => c.toUpperCase()); // Title Case
+}
+
 export default function Home() {
   const [topics, setTopics] = useState<Topic[]>([]);
   const [loading, setLoading] = useState(true);
@@ -40,9 +56,7 @@ export default function Home() {
         keyExtractor={(i) => i.topic}
         renderItem={({ item }) => (
           <Pressable className="rounded-2xl p-4 mb-3 bg-gray-50 border border-gray-200">
-            <Text className="text-lg font-semibold capitalize">
-              {item.topic === "all" ? "All Words" : item.topic.replace(/-/g, " ")}
-            </Text>
+            <Text className="text-lg font-semibold">{prettyTopic(item.topic)}</Text>
             <Text className="text-gray-500">{item.count} words</Text>
           </Pressable>
         )}
