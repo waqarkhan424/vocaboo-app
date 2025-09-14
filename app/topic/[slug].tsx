@@ -11,6 +11,11 @@ import {
   View,
 } from "react-native";
 
+
+import PaginationBar from "@/components/pagination-bar";
+import PerPagePicker from "@/components/per-page-picker";
+import WordCard from "@/components/word-card";
+
 // (Keep the same labels used on Home)
 const TOPIC_LABELS: Record<string, string> = {
   all: "Total Words",
@@ -28,10 +33,10 @@ export default function TopicScreen() {
   const { slug } = useLocalSearchParams<{ slug: string }>();
   const title = useMemo(() => prettyTopic(String(slug || "")), [slug]);
 
-  // --- Pagination state
+  // --- Pagination + filters
   const [q, setQ] = useState("");
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(20); // change this if you want a different page size
+  const [limit, setLimit] = useState(20); // default 20 words per page
   const [total, setTotal] = useState(0);
   const totalPages = Math.max(1, Math.ceil(total / Math.max(1, limit)));
 
@@ -40,10 +45,9 @@ export default function TopicScreen() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [err, setErr] = useState<string | null>(null);
-
   const listRef = useRef<FlatList<Word>>(null);
 
-  // Core loader for the current page
+  // Fetch words for a given page
   const load = async (targetPage: number) => {
     if (!slug) return;
     try {
@@ -54,9 +58,12 @@ export default function TopicScreen() {
         page: targetPage,
         limit,
       });
-      setItems(res.items);            // page-based: replace, don't append
+      setItems(res.items);
       setTotal(res.total || 0);
-      setLimit(res.limit || limit);   // trust API if it returns final limit
+      // trust server limit if it returns it; otherwise keep local
+      if (res.limit && res.limit !== limit) {
+        setLimit(res.limit);
+      }
       setErr(null);
     } catch (e: any) {
       setErr(e?.message || "Failed to load");
@@ -66,7 +73,7 @@ export default function TopicScreen() {
     }
   };
 
-  // 1) When topic changes → reset to page 1 and load
+  // When topic changes → reset everything
   useEffect(() => {
     setItems([]);
     setPage(1);
@@ -76,7 +83,7 @@ export default function TopicScreen() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [slug]);
 
-  // 2) When search text changes → debounce & reset to page 1
+  // Debounced search → reset to page 1
   useEffect(() => {
     const t = setTimeout(() => {
       setPage(1);
@@ -86,7 +93,7 @@ export default function TopicScreen() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [q]);
 
-  // 3) When page changes (Prev/Next) → load that page and scroll to top
+  // If page changes (Prev/Next) → reload and scroll top
   useEffect(() => {
     if (!slug) return;
     load(page);
@@ -94,13 +101,20 @@ export default function TopicScreen() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
 
+  // If per-page changes → reset to first page and reload
+  useEffect(() => {
+    setPage(1);
+    load(1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [limit]);
+
   const onRefresh = () => {
     setRefreshing(true);
     load(page);
   };
 
-  const canPrev = page > 1;
-  const canNext = page < totalPages;
+  const showingFrom = total === 0 ? 0 : (page - 1) * limit + 1;
+  const showingTo = Math.min(page * limit, total);
 
   return (
     <View className="flex-1 bg-white">
@@ -128,6 +142,13 @@ export default function TopicScreen() {
           autoCorrect={false}
           returnKeyType="search"
         />
+
+        {/* Per-page picker (default 20) */}
+        <PerPagePicker
+          value={limit}
+          onChange={(n) => setLimit(n)}
+          // options default to [10,20,30,50]; pass a custom array if you want
+        />
       </View>
 
       {/* Body */}
@@ -148,48 +169,17 @@ export default function TopicScreen() {
               <Text className="text-center text-gray-500">No words found.</Text>
             </View>
           }
-          renderItem={({ item }) => (
-            <View className="mx-4 mt-3 rounded-2xl bg-gray-50 border border-gray-200 p-4">
-              <Text className="text-xl font-semibold">{item.word}</Text>
-              <Text className="mt-1 text-gray-700">{item.definition}</Text>
-              {!!item.urduMeaning && <Text className="mt-1 text-green-700">{item.urduMeaning}</Text>}
-              {!!item.example && <Text className="mt-2 italic text-blue-700">{item.example}</Text>}
-            </View>
-          )}
-          // Pagination footer
+          renderItem={({ item }) => <WordCard item={item} />}
           ListFooterComponent={
-            <View className="px-4 py-5">
-              <View className="flex-row items-center justify-between rounded-2xl border border-gray-200 bg-gray-50 px-3 py-3">
-                <Pressable
-                  disabled={!canPrev}
-                  onPress={() => setPage((p) => Math.max(1, p - 1))}
-                  className={`px-4 py-2 rounded-xl ${canPrev ? "bg-white border border-gray-300" : "bg-gray-100 opacity-60"}`}
-                >
-                  <Text className="font-medium">Prev</Text>
-                </Pressable>
-
-                <Text className="text-gray-700">
-                  Page <Text className="font-semibold">{page}</Text> of{" "}
-                  <Text className="font-semibold">{totalPages}</Text>
-                </Text>
-
-                <Pressable
-                  disabled={!canNext}
-                  onPress={() => setPage((p) => Math.min(totalPages, p + 1))}
-                  className={`px-4 py-2 rounded-xl ${canNext ? "bg-white border border-gray-300" : "bg-gray-100 opacity-60"}`}
-                >
-                  <Text className="font-medium">Next</Text>
-                </Pressable>
-              </View>
-
-              {/* Optional: quick page info like "showing X–Y" */}
-              {!!total && (
-                <Text className="text-center text-gray-500 mt-2">
-                  Showing {(page - 1) * limit + 1}–
-                  {Math.min(page * limit, total)} of {total}
-                </Text>
-              )}
-            </View>
+            <PaginationBar
+              page={page}
+              totalPages={totalPages}
+              onPrev={() => setPage((p) => Math.max(1, p - 1))}
+              onNext={() => setPage((p) => Math.min(totalPages, p + 1))}
+              showingFrom={showingFrom}
+              showingTo={showingTo}
+              total={total}
+            />
           }
         />
       )}
