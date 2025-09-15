@@ -28,28 +28,25 @@ export default function PerPagePicker({ value, onChange, options = DEFAULTS }: P
         className="flex-row items-center gap-2 px-3 py-2 rounded-xl border bg-white border-gray-300"
       >
         <Text className="text-gray-700">{value} / page</Text>
-        <Ionicons
-          name={open ? "chevron-up" : "chevron-down"}
-          size={16}
-          color="#374151"
-        />
+        <Ionicons name={open ? "chevron-up" : "chevron-down"} size={16} color="#374151" />
       </Pressable>
 
-      {/* Backdrop (tap outside to close) */}
+      {/* Backdrop (tap anywhere outside to close) */}
       {open && (
         <Pressable
           onPress={() => setOpen(false)}
-          // create a large invisible backdrop around the menu area
           className="absolute"
-          style={{ top: 40, left: -500, right: -500, bottom: -1000 }}
+          // cover the full screen area relative to the parent
+          style={{ top: 0, left: -1000, right: -1000, bottom: -1000 }}
         />
       )}
 
-      {/* Menu */}
+      {/* Menu — positioned BELOW the trigger so the trigger stays tappable */}
       {open && (
         <View
-          className="absolute z-50 mt-2 w-40 rounded-xl border border-gray-200 bg-white right-0"
+          className="absolute z-50 w-40 rounded-xl border border-gray-200 bg-white right-0"
           style={{
+            top: 44, // ≈ trigger height + small gap; keeps trigger visible/clickable
             // subtle elevation across platforms
             shadowColor: "#000",
             shadowOpacity: 0.12,
