@@ -1,4 +1,5 @@
 import PerPagePicker from "@/components/per-page-picker";
+import { Ionicons } from "@expo/vector-icons";
 import { Text, TextInput, View } from "react-native";
 
 type Props = {
@@ -7,26 +8,36 @@ type Props = {
   limit: number;
   setLimit: (n: number) => void;
 
-  // NEW: to render "X words • Page P of T" on the same row as the dropdown
   total: number;
   page: number;
   totalPages: number;
 };
 
-export default function SearchBar({ q, setQ, limit, setLimit, total, page, totalPages }: Props) {
+export default function SearchBar({
+  q,
+  setQ,
+  limit,
+  setLimit,
+  total,
+  page,
+  totalPages,
+}: Props) {
   return (
-    <View className="px-4 pt-2 pb-3 border-b border-gray-100 bg-white">
-      {/* Search input */}
-      <TextInput
-        value={q}
-        onChangeText={setQ}
-        placeholder="Search words…"
-        className="mt-1 rounded-xl border border-gray-300 px-4 py-3 text-base"
-        autoCorrect={false}
-        returnKeyType="search"
-      />
+    <View className="px-4 pt-2 pb-3 bg-white border-b border-gray-100">
+      {/* Input with icon */}
+      <View className="flex-row items-center rounded-2xl border border-gray-300 px-3 py-2 bg-white">
+        <Ionicons name="search" size={18} color="#6B7280" />
+        <TextInput
+          value={q}
+          onChangeText={setQ}
+          placeholder="Search words…"
+          className="ml-2 flex-1 text-base py-1"
+          autoCorrect={false}
+          returnKeyType="search"
+        />
+      </View>
 
-      {/* One row: summary (left) + dropdown (right) */}
+      {/* Summary + per-page dropdown */}
       <View className="mt-3 flex-row items-center justify-between">
         <Text className="text-gray-700">
           {total ? `${total.toLocaleString()} words • Page ${page} of ${totalPages}` : ""}
