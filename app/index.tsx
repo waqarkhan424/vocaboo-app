@@ -1,7 +1,7 @@
-// FILE: app/index.tsx
 import { fetchTopics, Topic } from "@/lib/api";
 import { Ionicons } from "@expo/vector-icons";
-import { useRouter } from "expo-router"; // ✅ use the hook (context-safe)
+import { useRouter } from "expo-router";
+import * as WebBrowser from "expo-web-browser";
 import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
@@ -23,7 +23,11 @@ const TOPIC_META: Record<
     icon: "sunny-outline",
     color: "#D97706",
   },
-  "essential-words": { label: "Essential Words", icon: "star-outline", color: "#16A34A" },
+  "essential-words": {
+    label: "Essential Words",
+    icon: "star-outline",
+    color: "#16A34A",
+  },
 };
 
 // fallback for unknown slugs
@@ -35,7 +39,7 @@ function prettyTopic(slug: string) {
 }
 
 export default function Home() {
-  const router = useRouter(); // ✅ from context
+  const router = useRouter();
 
   const [topics, setTopics] = useState<Topic[]>([]);
   const [loading, setLoading] = useState(true);
@@ -111,6 +115,30 @@ export default function Home() {
             </Pressable>
           );
         }}
+        ListFooterComponent={
+          <View className="mt-6 items-center">
+            <Text
+              className="text-blue-600 underline mb-2"
+              onPress={() =>
+                WebBrowser.openBrowserAsync(
+                  "https://waqarkhan424.github.io/vocaboo-legal/privacy.html"
+                )
+              }
+            >
+              Privacy Policy
+            </Text>
+            <Text
+              className="text-blue-600 underline"
+              onPress={() =>
+                WebBrowser.openBrowserAsync(
+                  "https://waqarkhan424.github.io/vocaboo-legal/terms.html"
+                )
+              }
+            >
+              Terms & Conditions
+            </Text>
+          </View>
+        }
       />
     </View>
   );
