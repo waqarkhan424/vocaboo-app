@@ -1,23 +1,42 @@
+// FILE: app/index.tsx
 import { fetchTopics, Topic } from "@/lib/api";
-import { router } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router"; // ✅ use the hook (context-safe)
 import { useEffect, useState } from "react";
-import { ActivityIndicator, FlatList, Pressable, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  FlatList,
+  Pressable,
+  Text,
+  View,
+} from "react-native";
 
-// Map slugs to display labels
-const TOPIC_LABELS: Record<string, string> = {
-  all: "Total Words",            // virtual total
-  "all-words": "All Words",      // actual topic
-  "css-dawn-vocabulary": "Css Dawn Vocabulary",
-  "essential-words": "Essential Words",
+// Map slugs to display labels & icons/colors
+const TOPIC_META: Record<
+  string,
+  { label: string; icon: keyof typeof Ionicons.glyphMap; color: string }
+> = {
+  all: { label: "Total Words", icon: "book-outline", color: "#4F46E5" },
+  "all-words": { label: "All Words", icon: "layers-outline", color: "#0891B2" },
+  "css-dawn-vocabulary": {
+    label: "Css Dawn Vocabulary",
+    icon: "sunny-outline",
+    color: "#D97706",
+  },
+  "essential-words": { label: "Essential Words", icon: "star-outline", color: "#16A34A" },
 };
 
-// Fallback pretty label for unknown slugs
+// fallback for unknown slugs
 function prettyTopic(slug: string) {
-  if (TOPIC_LABELS[slug]) return TOPIC_LABELS[slug];
-  return slug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+  return (
+    TOPIC_META[slug]?.label ||
+    slug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())
+  );
 }
 
 export default function Home() {
+  const router = useRouter(); // ✅ from context
+
   const [topics, setTopics] = useState<Topic[]>([]);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState<string | null>(null);
@@ -32,7 +51,7 @@ export default function Home() {
   if (loading) {
     return (
       <View className="flex-1 items-center justify-center bg-white">
-        <ActivityIndicator />
+        <ActivityIndicator size="large" color="#4F46E5" />
         <Text className="mt-2 text-gray-500">Loading topics…</Text>
       </View>
     );
@@ -48,25 +67,50 @@ export default function Home() {
   }
 
   return (
-    <View className="flex-1 bg-white p-4">
-      <Text className="text-2xl font-bold mb-4">Explore Vocabulary</Text>
+    <View className="flex-1 bg-white">
+      {/* Header */}
+      <View className="px-6 pt-12 pb-6 bg-indigo-600 rounded-b-3xl">
+        <Text className="text-3xl font-bold text-white">Explore Vocabulary</Text>
+        <Text className="text-indigo-100 mt-1">Learn and practice words easily</Text>
+      </View>
+
+      {/* List of topics */}
       <FlatList
+        contentContainerStyle={{ padding: 16 }}
         data={topics}
         keyExtractor={(i) => i.topic}
-        renderItem={({ item }) => (
-          <Pressable
-            className="rounded-2xl p-4 mb-3 bg-gray-50 border border-gray-200"
-            onPress={() =>
-              router.push({
-                pathname: "/topic/[slug]",
-                params: { slug: item.topic }, // typed & safe
-              })
-            }
-          >
-            <Text className="text-lg font-semibold">{prettyTopic(item.topic)}</Text>
-            <Text className="text-gray-500">{item.count} words</Text>
-          </Pressable>
-        )}
+        renderItem={({ item }) => {
+          const meta = TOPIC_META[item.topic] || {
+            label: prettyTopic(item.topic),
+            icon: "folder-outline" as keyof typeof Ionicons.glyphMap,
+            color: "#6B7280",
+          };
+          return (
+            <Pressable
+              className="rounded-2xl p-5 mb-4 bg-white shadow-md flex-row items-center"
+              onPress={() =>
+                router.push({
+                  pathname: "/topic/[slug]",
+                  params: { slug: item.topic },
+                })
+              }
+            >
+              <View
+                className="w-12 h-12 rounded-xl items-center justify-center mr-4"
+                style={{ backgroundColor: meta.color + "22" }}
+              >
+                <Ionicons name={meta.icon} size={26} color={meta.color} />
+              </View>
+              <View className="flex-1">
+                <Text className="text-lg font-semibold text-gray-900">
+                  {meta.label}
+                </Text>
+                <Text className="text-gray-500">{item.count} words</Text>
+              </View>
+              <Ionicons name="chevron-forward" size={20} color="#9CA3AF" />
+            </Pressable>
+          );
+        }}
       />
     </View>
   );
