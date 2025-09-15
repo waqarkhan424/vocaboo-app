@@ -6,9 +6,11 @@ type Props = {
   total: number;
   page: number;
   totalPages: number;
+  /** New: allow hiding the meta row from the header */
+  showMeta?: boolean;
 };
 
-export default function TopicHeader({ title, total, page, totalPages }: Props) {
+export default function TopicHeader({ title, total, page, totalPages, showMeta = true }: Props) {
   return (
     <View className="px-4 pt-10 pb-3 border-b border-gray-200 bg-white">
       <View className="flex-row items-center">
@@ -17,7 +19,7 @@ export default function TopicHeader({ title, total, page, totalPages }: Props) {
         </Pressable>
         <View className="flex-1">
           <Text className="text-2xl font-bold">{title}</Text>
-          {!!total && (
+          {showMeta && !!total && (
             <Text className="text-gray-500 mt-0.5">
               {total.toLocaleString()} words • Page {page} of {totalPages}
             </Text>

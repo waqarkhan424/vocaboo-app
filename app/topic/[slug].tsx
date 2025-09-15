@@ -34,12 +34,22 @@ export default function TopicScreen() {
 
   return (
     <View className="flex-1 bg-white">
-      <TopicHeader title={title} total={total} page={page} totalPages={totalPages} />
+      {/* Hide meta here; it will show under the search input */}
+      <TopicHeader title={title} total={0} page={page} totalPages={totalPages} showMeta={false} />
 
-      {/* NEW: Chips to switch between Total Words / All Words / Css Dawn Vocabulary / Essential Words */}
+      {/* Topic chips */}
       <TopicSwitcher topics={topics} active={activeTopic} onChange={(key) => setActiveTopic(key)} />
 
-      <SearchBar q={q} setQ={setQ} limit={limit} setLimit={setLimit} />
+      {/* Search + one-row summary + per-page dropdown */}
+      <SearchBar
+        q={q}
+        setQ={setQ}
+        limit={limit}
+        setLimit={setLimit}
+        total={total}
+        page={page}
+        totalPages={totalPages}
+      />
 
       <WordsList
         items={items}
