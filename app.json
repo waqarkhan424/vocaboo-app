@@ -20,7 +20,8 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.waqar_424.vocabooapp"
+      "package": "com.waqar_424.vocabooapp",
+      "versionCode": 2
     },
     "web": {
       "output": "static",
