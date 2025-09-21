@@ -4,7 +4,7 @@ import TopicSwitcher from "@/components/topic-switcher";
 import WordsList from "@/components/words-list";
 import useTopicWords from "@/hooks/useTopicWords";
 import { useLocalSearchParams } from "expo-router";
-import { View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function TopicScreen() {
   const { slug } = useLocalSearchParams<{ slug: string }>();
@@ -33,7 +33,7 @@ export default function TopicScreen() {
   } = useTopicWords(slug);
 
   return (
-    <View className="flex-1 bg-white">
+    <SafeAreaView className="flex-1 bg-white">
       {/* Hide meta here; it will show under the search input */}
       <TopicHeader title={title} total={0} page={page} totalPages={totalPages} showMeta={false} />
 
@@ -65,6 +65,6 @@ export default function TopicScreen() {
         total={total}
         listRef={listRef}
       />
-    </View>
+    </SafeAreaView>
   );
 }
