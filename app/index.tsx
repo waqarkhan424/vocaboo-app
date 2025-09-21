@@ -10,6 +10,7 @@ import {
   Text,
   View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 // Map slugs to display labels & icons/colors
 const TOPIC_META: Record<
@@ -54,26 +55,26 @@ export default function Home() {
 
   if (loading) {
     return (
-      <View className="flex-1 items-center justify-center bg-white">
+      <SafeAreaView className="flex-1 items-center justify-center bg-white">
         <ActivityIndicator size="large" color="#4F46E5" />
         <Text className="mt-2 text-gray-500">Loading topics…</Text>
-      </View>
+      </SafeAreaView>
     );
   }
 
   if (err) {
     return (
-      <View className="flex-1 items-center justify-center bg-white px-6">
+      <SafeAreaView className="flex-1 items-center justify-center bg-white px-6">
         <Text className="text-red-600 font-semibold mb-2">Failed to load</Text>
         <Text className="text-center text-gray-600">{err}</Text>
-      </View>
+      </SafeAreaView>
     );
   }
 
   return (
-    <View className="flex-1 bg-white">
+    <SafeAreaView className="flex-1 bg-white">
       {/* Header */}
-      <View className="px-6 pt-12 pb-6 bg-indigo-600 rounded-b-3xl">
+      <View className="px-6 pt-6 pb-6 bg-indigo-600 rounded-b-3xl">
         <Text className="text-3xl font-bold text-white">Explore Vocabulary</Text>
         <Text className="text-indigo-100 mt-1">Learn and practice words easily</Text>
       </View>
@@ -140,6 +141,6 @@ export default function Home() {
           </View>
         }
       />
-    </View>
+    </SafeAreaView>
   );
 }
