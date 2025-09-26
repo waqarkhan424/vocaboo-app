@@ -1,8 +1,8 @@
-export const API_BASE =
-  __DEV__ ? "http://10.0.2.2:3000/api/v1" : "https://vocab-api-chi.vercel.app/api/v1";
+// export const API_BASE =
+//   __DEV__ ? "http://10.0.2.2:3000/api/v1" : "https://vocab-api-chi.vercel.app/api/v1";
 
 
-// export const API_BASE = "https://vocab-api-chi.vercel.app/api/v1";
+export const API_BASE = "https://vocab-api-chi.vercel.app/api/v1";
 
 
 export type Topic = { topic: string; count: number };
