@@ -9,6 +9,17 @@
         "buildType": "app-bundle"
       },
       "autoIncrement": true
+    },
+    "preview": {
+      "android": {
+        "buildType": "apk"
+      }
+    },
+    "development": {
+      "developmentClient": true,
+      "android": {
+        "buildType": "apk"
+      }
     }
   }
 }
