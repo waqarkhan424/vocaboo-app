@@ -6,41 +6,44 @@ import "./global.css";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 
-// Keep the native splash on while fonts load
+// Keep the native splash visible while fonts load
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  // Load Inter variable fonts (one file = all weights)
-  const [loaded, error] = useFonts({
-    Inter: require("../assets/fonts/InterVariable.ttf"),
-    "Inter-Italic": require("../assets/fonts/InterVariable-Italic.ttf"),
-  });
+  // Load Merriweather (variable) — rename the files if your names differ
+ 
+const [loaded, error] = useFonts({
+  Merriweather: require("../assets/fonts/Merriweather-VariableFont_opsz,wdth,wght.ttf"),
+  "Merriweather-Italic": require("../assets/fonts/Merriweather-Italic-VariableFont_opsz,wdth,wght.ttf"),
+});
+
 
   useEffect(() => {
     if (loaded || error) {
-      // Cast to any so we can set defaultProps without TS complaints
-      const RNText = Text as any;
-      const RNTextInput = TextInput as any;
+      // TS types don't expose defaultProps — cast to any
+      const RNText: any = Text;
+      const RNTextInput: any = TextInput;
 
-      // Apply Inter globally to all <Text/>
+      // Apply Merriweather globally to all <Text />
       const prevText = RNText.defaultProps?.style;
       RNText.defaultProps = RNText.defaultProps || {};
       RNText.defaultProps.style = Array.isArray(prevText)
-        ? [...prevText, { fontFamily: "Inter" }]
-        : [prevText || {}, { fontFamily: "Inter" }];
+        ? [...prevText, { fontFamily: "Merriweather" }]
+        : [prevText || {}, { fontFamily: "Merriweather" }];
 
-      // Apply Inter to all <TextInput/> (placeholders/inputs)
+      // Apply Merriweather to all <TextInput />
       const prevInput = RNTextInput.defaultProps?.style;
       RNTextInput.defaultProps = RNTextInput.defaultProps || {};
       RNTextInput.defaultProps.style = Array.isArray(prevInput)
-        ? [...prevInput, { fontFamily: "Inter" }]
-        : [prevInput || {}, { fontFamily: "Inter" }];
+        ? [...prevInput, { fontFamily: "Merriweather" }]
+        : [prevInput || {}, { fontFamily: "Merriweather" }];
 
+      // Hide splash when fonts are ready (or if there was an error)
       SplashScreen.hideAsync();
     }
   }, [loaded, error]);
 
-  // Keep splash visible until fonts finish
+  // Keep splash visible until fonts finish to avoid FOUT
   if (!loaded && !error) return null;
 
   return (
