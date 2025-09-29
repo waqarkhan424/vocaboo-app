@@ -9,26 +9,28 @@ import * as SplashScreen from "expo-splash-screen";
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
- 
+  //  Load static (non-variable) Nunito Sans faces
   const [loaded, error] = useFonts({
-    NunitoSans: require("../assets/fonts/NunitoSansVariable.ttf"),
-    "NunitoSans-Italic": require("../assets/fonts/NunitoSansVariable-Italic.ttf"),
+    NunitoSans: require("../assets/fonts/NunitoSans-Regular.ttf"),
+    "NunitoSans-Italic": require("../assets/fonts/NunitoSans-Italic.ttf"),
+    "NunitoSans-Bold": require("../assets/fonts/NunitoSans-Bold.ttf"),
   });
 
   useEffect(() => {
     if (loaded || error) {
-      // Make Nunito Sans the DEFAULT for ALL Text/TextInput
+      // Make Nunito Sans the DEFAULT for all Text & TextInput
       const RNText: any = Text;
       const RNTextInput: any = TextInput;
 
-      const prevText = RNText.defaultProps?.style;
       RNText.defaultProps = RNText.defaultProps || {};
+      RNTextInput.defaultProps = RNTextInput.defaultProps || {};
+
+      const prevText = RNText.defaultProps.style;
       RNText.defaultProps.style = Array.isArray(prevText)
         ? [...prevText, { fontFamily: "NunitoSans" }]
         : [prevText || {}, { fontFamily: "NunitoSans" }];
 
-      const prevInput = RNTextInput.defaultProps?.style;
-      RNTextInput.defaultProps = RNTextInput.defaultProps || {};
+      const prevInput = RNTextInput.defaultProps.style;
       RNTextInput.defaultProps.style = Array.isArray(prevInput)
         ? [...prevInput, { fontFamily: "NunitoSans" }]
         : [prevInput || {}, { fontFamily: "NunitoSans" }];
