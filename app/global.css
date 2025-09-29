@@ -1,3 +1,20 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/*
+ * Apply the default sans-serif font (Nunito Sans) to all Text and
+ * TextInput components.  NativeWind does not automatically apply the
+ * `font-sans` class, so without this base layer your custom `sans`
+ * definition in tailwind.config.js would only take effect when you
+ * explicitly add `font-sans` to a component.  This rule ensures every
+ * Text element uses your custom font by default.
+ */
+@layer base {
+  Text {
+    @apply font-sans;
+  }
+  TextInput {
+    @apply font-sans;
+  }
+}
