@@ -6,9 +6,15 @@ module.exports = {
     extend: {
       // 👇 Map Tailwind font utilities to your loaded RN font families
       fontFamily: {
-        nunito: ["NunitoSans-Regular"],
-        "nunito-bold": ["NunitoSans-Bold"],
-        "nunito-italic": ["NunitoSans-Italic"],
+
+        // nunito: ["NunitoSans-Regular"],
+        // "nunito-bold": ["NunitoSans-Bold"],
+        // "nunito-italic": ["NunitoSans-Italic"],
+
+       sans: ["NunitoSans-Regular"],        // Use Nunito Sans as the default sans‑serif
+      'sans-bold': ["NunitoSans-Bold"],
+      'sans-italic': ["NunitoSans-Italic"],
+
       },
     },
   },
