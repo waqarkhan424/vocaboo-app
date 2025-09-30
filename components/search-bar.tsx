@@ -23,7 +23,7 @@ export default function SearchBar({
   totalPages,
 }: Props) {
   return (
-    <View className="px-4 pt-2 pb-3 bg-white border-b border-gray-100">
+    <View className="px-4 pt-2 pb-3 bg-white">
       {/* Input with icon */}
       <View className="flex-row items-center rounded-2xl border border-gray-300 px-3 py-2 bg-white">
         <Ionicons name="search" size={18} color="#6B7280" />
