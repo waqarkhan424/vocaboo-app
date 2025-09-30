@@ -32,7 +32,7 @@ export default function TopicHeader({
         <Pressable
           onPress={() => router.back()}
           accessibilityLabel="Go back"
-          className={`mr-3 rounded-full ${backBg} w-10 h-10 items-center justify-center`}
+          className={`mr-3 rounded-full w-10 h-10 items-center justify-center ${backBg}`}
         >
           <Ionicons name="chevron-back" size={22} color={iconColor} />
         </Pressable>

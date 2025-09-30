@@ -5,11 +5,12 @@ import WordsList from "@/components/words-list";
 import useTopicWords from "@/hooks/useTopicWords";
 import { useLocalSearchParams } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { Text, View } from "react-native";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function TopicScreen() {
   const { slug } = useLocalSearchParams<{ slug: string }>();
+  const insets = useSafeAreaInsets();
 
   const {
     // switching
@@ -21,49 +22,68 @@ export default function TopicScreen() {
     title,
 
     // filters
-    q, setQ,
-    limit, setLimit,
+    q,
+    setQ,
+    limit,
+    setLimit,
 
     // pagination
-    page, setPage,
-    total, totalPages,
-    showingFrom, showingTo,
+    page,
+    setPage,
+    total,
+    totalPages,
+    showingFrom,
+    showingTo,
 
     // data + ui
-    items, loading, refreshing, err, onRefresh,
+    items,
+    loading,
+    refreshing,
+    err,
+    onRefresh,
     listRef,
   } = useTopicWords(slug);
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-50">
-      {/* Light status bar for the indigo hero header */}
+    <SafeAreaView className="flex-1 bg-white" edges={["bottom", "left", "right"]}>
+      {/* Light status bar text (because header is indigo) */}
       <StatusBar style="light" />
 
-      {/* Hero header */}
+      {/* Paint the transparent status area with the header color */}
+      <View style={{ height: insets.top, backgroundColor: "#4F46E5" }} />
+
+      {/* Indigo hero header */}
       <View className="bg-indigo-600 rounded-b-3xl pb-6">
         <TopicHeader
           title={title}
-          total={total}
+          total={0}
           page={page}
           totalPages={totalPages}
-          showMeta={true}
-          onDark={true}
+          showMeta={false}
+          onDark
+        />
+
+        {/* Horizontal topic chips */}
+        <TopicSwitcher
+          topics={topics}
+          active={activeTopic}
+          onChange={(key) => setActiveTopic(key)}
         />
       </View>
 
-      {/* Floating search card */}
-      <View className="px-4 -mt-5">
-        <View
-          className="rounded-2xl bg-white overflow-hidden"
-          style={{
-            // soft shadow cross-platform
-            shadowColor: "#000",
-            shadowOpacity: 0.12,
-            shadowRadius: 12,
-            shadowOffset: { width: 0, height: 6 },
-            elevation: 8,
-          }}
-        >
+      {/* Overlapping search card */}
+      <View
+        className="px-4 -mt-6"
+        style={{
+          // shadow/elevation
+          shadowColor: "#000",
+          shadowOpacity: 0.12,
+          shadowRadius: 10,
+          shadowOffset: { width: 0, height: 6 },
+          elevation: 6,
+        }}
+      >
+        <View className="rounded-2xl bg-white overflow-hidden">
           <SearchBar
             q={q}
             setQ={setQ}
@@ -76,19 +96,14 @@ export default function TopicScreen() {
         </View>
       </View>
 
-      {/* Topic chips */}
-      <View className="px-4 pt-3 pb-1">
-        <TopicSwitcher
-          topics={topics}
-          active={activeTopic}
-          onChange={(key) => setActiveTopic(key)}
-        />
-      </View>
+      {/* Error banner (subtle, non-blocking) */}
+      {err ? (
+        <View className="mx-4 mt-3 rounded-xl bg-red-50 border border-red-200 px-3 py-2">
+          <Text className="text-red-700">{err}</Text>
+        </View>
+      ) : null}
 
-      {/* Divider */}
-      <View className="h-[1px] bg-gray-200 mx-4" />
-
-      {/* Words list */}
+      {/* List */}
       <View className="flex-1">
         <WordsList
           items={items}
