@@ -18,17 +18,7 @@ export default function TopicHeader({
   showMeta = true,
 }: Props) {
   return (
-    <View
-      className="px-4 pt-6 pb-3 bg-white border-b border-gray-200"
-      // light drop shadow under the header (Android & iOS)
-      style={{
-        shadowColor: "#000",
-        shadowOpacity: 0.04,
-        shadowRadius: 6,
-        shadowOffset: { width: 0, height: 3 },
-        elevation: 2,
-      }}
-    >
+    <View className="px-4 pt-4 pb-3 bg-white">
       <View className="flex-row items-center">
         {/* Bigger back button */}
         <Pressable
