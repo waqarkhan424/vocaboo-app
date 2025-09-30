@@ -19,7 +19,7 @@ export default function TopicHeader({
 }: Props) {
   return (
     <View
-      className="px-4 pt-10 pb-3 bg-white border-b border-gray-200"
+      className="px-4 pt-6 pb-3 bg-white border-b border-gray-200"
       // light drop shadow under the header (Android & iOS)
       style={{
         shadowColor: "#000",
