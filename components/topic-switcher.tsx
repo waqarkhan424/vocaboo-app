@@ -10,7 +10,7 @@ type Props = {
 
 export default function TopicSwitcher({ topics, active, onChange }: Props) {
   return (
-    <View className="px-4 pt-2 pb-2 bg-white border-b border-gray-100">
+    <View className="px-4 pt-2 pb-2 bg-white">
       <View className="flex-row flex-wrap gap-2">
         {topics.map((t) => {
           const isActive = t.key === active;
