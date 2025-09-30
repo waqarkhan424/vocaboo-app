@@ -1,6 +1,7 @@
 import { fetchTopics, Topic } from "@/lib/api";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import { StatusBar } from "expo-status-bar";
 import * as WebBrowser from "expo-web-browser";
 import { useEffect, useState } from "react";
 import {
@@ -73,6 +74,11 @@ export default function Home() {
 
   return (
     <SafeAreaView className="flex-1 bg-white">
+      {/* Paint the status-bar area indigo and set light icons */}
+      <SafeAreaView edges={["top"]} style={{ backgroundColor: "#4F46E5" }}>
+        <StatusBar style="light" backgroundColor="#4F46E5" />
+      </SafeAreaView>
+
       {/* Header */}
       <View className="px-6 pt-6 pb-6 bg-indigo-600 rounded-b-3xl">
         <Text className="text-3xl font-bold text-white">Explore Vocabulary</Text>
