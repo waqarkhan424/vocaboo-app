@@ -45,9 +45,10 @@ export default function TopicScreen() {
   } = useTopicWords(slug);
 
   return (
-    <SafeAreaView className="flex-1 bg-white" edges={["bottom", "left", "right"]}>
-      {/* Light status bar text (because header is indigo) */}
-      <StatusBar style="light" />
+
+   <SafeAreaView className="flex-1 bg-white" edges={["bottom", "left", "right"]}>
+      {/* Light status bar text, draw under it */}
+      <StatusBar style="light" translucent backgroundColor="transparent" />
 
       {/* Paint the transparent status area with the header color */}
       <View style={{ height: insets.top, backgroundColor: "#4F46E5" }} />
