@@ -1,4 +1,3 @@
-
 import { fetchTopics, Topic } from "@/lib/api";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
@@ -7,7 +6,10 @@ import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
+  Linking,
+  Platform,
   Pressable,
+  Share,
   Text,
   View,
 } from "react-native";
@@ -40,9 +42,17 @@ function prettyTopic(slug: string) {
   );
 }
 
-export default function Home() {
-    const insets = useSafeAreaInsets();
+// Play Store package and share link
+const ANDROID_PACKAGE = "com.waqar_424.vocabooapp";
+const STORE_LINK =
+  Platform.select({
+    android: `https://play.google.com/store/apps/details?id=${ANDROID_PACKAGE}`,
+    ios: "https://apps.apple.com/", // placeholder if you later publish on iOS
+    default: `https://play.google.com/store/apps/details?id=${ANDROID_PACKAGE}`,
+  }) || `https://play.google.com/store/apps/details?id=${ANDROID_PACKAGE}`;
 
+export default function Home() {
+  const insets = useSafeAreaInsets();
   const router = useRouter();
 
   const [topics, setTopics] = useState<Topic[]>([]);
@@ -55,6 +65,33 @@ export default function Home() {
       .catch((e) => setErr(String(e?.message || e)))
       .finally(() => setLoading(false));
   }, []);
+
+  const handleRate = async () => {
+    // Prefer native market URL on Android, then fall back to web
+    const marketUrl = `market://details?id=${ANDROID_PACKAGE}`;
+    if (Platform.OS === "android") {
+      const canOpenMarket = await Linking.canOpenURL(marketUrl);
+      if (canOpenMarket) {
+        try {
+          await Linking.openURL(marketUrl);
+          return;
+        } catch {}
+      }
+    }
+    // Fallback (or iOS/web)
+    Linking.openURL(STORE_LINK);
+  };
+
+  const handleShare = async () => {
+    try {
+      await Share.share({
+        message:
+          `I'm learning new words with Vocaboo — it’s simple and helpful.\nDownload: ${STORE_LINK}`,
+      });
+    } catch {
+      // no-op
+    }
+  };
 
   if (loading) {
     return (
@@ -75,8 +112,7 @@ export default function Home() {
   }
 
   return (
-
-  // IMPORTANT: exclude "top" so this SafeAreaView doesn't paint the status area white
+    // IMPORTANT: exclude "top" so this SafeAreaView doesn't paint the status area white
     <SafeAreaView className="flex-1 bg-white" edges={["bottom", "left", "right"]}>
       {/* Paint the transparent status-bar inset */}
       <View style={{ height: insets.top, backgroundColor: "#4F46E5" }} />
@@ -125,31 +161,58 @@ export default function Home() {
           );
         }}
         ListFooterComponent={
-          <View className="mt-6 items-center">
-            <Text
-              className="text-blue-600 underline mb-2"
-              onPress={() =>
-                WebBrowser.openBrowserAsync(
-                  "https://waqarkhan424.github.io/vocaboo-legal/privacy.html"
-                )
-              }
-            >
-              Privacy Policy
-            </Text>
-            <Text
-              className="text-blue-600 underline"
-              onPress={() =>
-                WebBrowser.openBrowserAsync(
-                  "https://waqarkhan424.github.io/vocaboo-legal/terms.html"
-                )
-              }
-            >
-              Terms & Conditions
-            </Text>
+          <View className="mt-2">
+            {/* Rate & Share row */}
+            <View className="flex-row gap-3 px-1 mt-2">
+              <Pressable
+                onPress={handleRate}
+                className="flex-1 rounded-2xl bg-white border border-gray-200 px-4 py-4 items-center shadow-sm"
+              >
+                <View className="flex-row items-center gap-2">
+                  <Ionicons name="star" size={18} color="#F59E0B" />
+                  <Text className="text-gray-900 font-semibold">Rate App</Text>
+                </View>
+                <Text className="text-gray-500 text-xs mt-1">Play Store</Text>
+              </Pressable>
+
+              <Pressable
+                onPress={handleShare}
+                className="flex-1 rounded-2xl bg-white border border-gray-200 px-4 py-4 items-center shadow-sm"
+              >
+                <View className="flex-row items-center gap-2">
+                  <Ionicons name="share-social-outline" size={18} color="#2563EB" />
+                  <Text className="text-gray-900 font-semibold">Share App</Text>
+                </View>
+                <Text className="text-gray-500 text-xs mt-1">Invite friends</Text>
+              </Pressable>
+            </View>
+
+            {/* Links */}
+            <View className="mt-6 items-center">
+              <Text
+                className="text-blue-600 underline mb-2"
+                onPress={() =>
+                  WebBrowser.openBrowserAsync(
+                    "https://waqarkhan424.github.io/vocaboo-legal/privacy.html"
+                  )
+                }
+              >
+                Privacy Policy
+              </Text>
+              <Text
+                className="text-blue-600 underline"
+                onPress={() =>
+                  WebBrowser.openBrowserAsync(
+                    "https://waqarkhan424.github.io/vocaboo-legal/terms.html"
+                  )
+                }
+              >
+                Terms & Conditions
+              </Text>
+            </View>
           </View>
         }
       />
     </SafeAreaView>
   );
 }
-
