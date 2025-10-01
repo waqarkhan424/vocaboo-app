@@ -21,7 +21,7 @@
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
       "package": "com.waqar_424.vocabooapp",
-      "versionCode": 4
+      "versionCode": 6
     },
     "web": {
       "output": "static",
