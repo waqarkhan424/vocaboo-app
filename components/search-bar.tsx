@@ -43,8 +43,8 @@ export default function SearchBar({
           {total ? `${total.toLocaleString()} words • Page ${page} of ${totalPages}` : ""}
         </Text>
 
-        {/* Increased menuOffsetY to push the menu further down */}
-        <PerPagePicker value={limit} onChange={setLimit} menuOffsetY={18} />
+        {/* Slightly closer to the trigger after gutter reduction */}
+        <PerPagePicker value={limit} onChange={setLimit} menuOffsetY={12} />
       </View>
     </View>
   );

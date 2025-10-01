@@ -25,14 +25,14 @@ const SCREEN_PADDING = 8;
 // row height estimate for the menu (used to compute fit)
 const ROW_H = 40;
 
-// base gap so the menu never covers the trigger (bumped)
-const BASE_GUTTER = 28;
+// base gap so the menu never covers the trigger (reduced a bit)
+const BASE_GUTTER = 24;
 
 export default function PerPagePicker({
   value,
   onChange,
   options = DEFAULTS,
-  // small extra nudge that you can tweak per screen (bumped)
+  // small extra nudge that you can tweak per screen
   menuOffsetY = 12,
 }: Props) {
   const [open, setOpen] = useState(false);
