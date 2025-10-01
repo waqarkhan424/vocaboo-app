@@ -13,6 +13,8 @@ type Props = {
   value: number;
   onChange: (n: number) => void;
   options?: number[];
+  /** Extra vertical space between trigger and menu (pixels). */
+  menuOffsetY?: number;
 };
 
 const DEFAULTS = [10, 20, 30, 50];
@@ -23,13 +25,14 @@ const SCREEN_PADDING = 8;
 // row height estimate for the menu (used to compute fit)
 const ROW_H = 40;
 
-// visible gap so the menu never covers the trigger
-const GUTTER = 12;
+// base gap so the menu never covers the trigger
+const BASE_GUTTER = 20; // was 12 → moved a little more down
 
 export default function PerPagePicker({
   value,
   onChange,
   options = DEFAULTS,
+  menuOffsetY = 6, // small extra nudge that you can tweak per screen
 }: Props) {
   const [open, setOpen] = useState(false);
 
@@ -60,11 +63,14 @@ export default function PerPagePicker({
     // Estimated menu height (rows + small padding)
     const menuH = options.length * ROW_H + 8;
 
-    // Try to show BELOW the trigger with a visible gap
-    const belowY = anchor.y + anchor.height + GUTTER;
+    // Try to show BELOW the trigger with a visible gap (+ extra offset)
+    const belowY = anchor.y + anchor.height + BASE_GUTTER + menuOffsetY;
 
     // If below would overflow the screen, FLIP ABOVE (also with a gap)
-    const aboveY = Math.max(SCREEN_PADDING, anchor.y - menuH - GUTTER);
+    const aboveY = Math.max(
+      SCREEN_PADDING,
+      anchor.y - menuH - BASE_GUTTER - menuOffsetY
+    );
 
     const top = belowY + menuH > sh - SCREEN_PADDING ? aboveY : belowY;
 
