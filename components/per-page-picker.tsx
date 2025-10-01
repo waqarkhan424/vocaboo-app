@@ -25,14 +25,15 @@ const SCREEN_PADDING = 8;
 // row height estimate for the menu (used to compute fit)
 const ROW_H = 40;
 
-// base gap so the menu never covers the trigger
-const BASE_GUTTER = 20; // was 12 → moved a little more down
+// base gap so the menu never covers the trigger (bumped)
+const BASE_GUTTER = 28;
 
 export default function PerPagePicker({
   value,
   onChange,
   options = DEFAULTS,
-  menuOffsetY = 6, // small extra nudge that you can tweak per screen
+  // small extra nudge that you can tweak per screen (bumped)
+  menuOffsetY = 12,
 }: Props) {
   const [open, setOpen] = useState(false);
 
@@ -90,6 +91,8 @@ export default function PerPagePicker({
         hitSlop={8}
         onPress={openMenu}
         className="flex-row items-center gap-2 px-3 py-2 rounded-xl border bg-white border-gray-300"
+        accessibilityRole="button"
+        accessibilityLabel="Change items per page"
       >
         <Text className="text-gray-700">{value} / page</Text>
         <Ionicons
@@ -110,6 +113,8 @@ export default function PerPagePicker({
         <Pressable
           onPress={() => setOpen(false)}
           style={{ position: "absolute", inset: 0 }}
+          accessibilityLabel="Close menu"
+          accessibilityRole="button"
         />
 
         {/* Menu */}
@@ -137,6 +142,9 @@ export default function PerPagePicker({
                 className={`px-3 py-2 flex-row items-center justify-between ${
                   i !== options.length - 1 ? "border-b border-gray-100" : ""
                 } ${active ? "bg-blue-50" : ""}`}
+                accessibilityRole="button"
+                accessibilityLabel={`${n} per page`}
+                accessibilityState={{ selected: active }}
               >
                 <Text
                   className={

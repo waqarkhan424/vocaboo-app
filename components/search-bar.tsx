@@ -42,7 +42,9 @@ export default function SearchBar({
         <Text className="text-gray-700">
           {total ? `${total.toLocaleString()} words • Page ${page} of ${totalPages}` : ""}
         </Text>
-        <PerPagePicker value={limit} onChange={setLimit} />
+
+        {/* Increased menuOffsetY to push the menu further down */}
+        <PerPagePicker value={limit} onChange={setLimit} menuOffsetY={18} />
       </View>
     </View>
   );
