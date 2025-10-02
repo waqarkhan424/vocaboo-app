@@ -21,15 +21,13 @@
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
       "package": "com.waqar_424.vocabooapp",
-      "versionCode": 8
+      "versionCode": 9
     },
-
     "androidStatusBar": {
       "barStyle": "light-content",
       "backgroundColor": "#00000000",
       "translucent": true
     },
-
     "web": {
       "output": "static",
       "favicon": "./assets/images/favicon.png"
