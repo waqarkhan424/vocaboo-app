@@ -1,7 +1,6 @@
 import { fetchTopics, Topic } from "@/lib/api";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { StatusBar } from "expo-status-bar";
 import * as WebBrowser from "expo-web-browser";
 import { useEffect, useState } from "react";
 import {
@@ -114,12 +113,8 @@ export default function Home() {
 
   return (
   
-
   // IMPORTANT: exclude "top" so this SafeAreaView doesn't paint the status area white
     <SafeAreaView className="flex-1 bg-white" edges={["bottom", "left", "right"]}>
-      {/* Make status bar text light and draw under it */}
-      <StatusBar style="light" translucent backgroundColor="transparent" />
-
       {/* Paint the transparent status-bar inset */}
       <View style={{ height: insets.top, backgroundColor: "#4F46E5" }} />
 
