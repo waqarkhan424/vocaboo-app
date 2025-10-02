@@ -5,11 +5,10 @@ import WordsList from "@/components/words-list";
 import useTopicWords from "@/hooks/useTopicWords";
 import { useLocalSearchParams } from "expo-router";
 import { Text, View } from "react-native";
-import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function TopicScreen() {
   const { slug } = useLocalSearchParams<{ slug: string }>();
-  const insets = useSafeAreaInsets();
 
   const {
     // switching
@@ -44,15 +43,8 @@ export default function TopicScreen() {
   } = useTopicWords(slug);
 
   return (
-
-
- <SafeAreaView className="flex-1 bg-white" edges={["bottom", "left", "right"]}>
-      {/* Paint the transparent status area with the header color */}
-      <View style={{ height: insets.top, backgroundColor: "#4F46E5" }} />
-
-
-
-
+    // Include top safe area; no manual status inset painting
+    <SafeAreaView className="flex-1 bg-white" edges={["top", "bottom", "left", "right"]}>
       {/* Indigo hero header */}
       <View className="bg-indigo-600 rounded-b-3xl pb-6">
         <TopicHeader
