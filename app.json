@@ -21,7 +21,7 @@
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
       "package": "com.waqar_424.vocabooapp",
-      "versionCode": 9
+      "versionCode": 10
     },
     "androidStatusBar": {
       "barStyle": "light-content",
