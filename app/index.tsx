@@ -13,7 +13,7 @@ import {
   Text,
   View,
 } from "react-native";
-import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 // Map slugs to display labels & icons/colors
 const TOPIC_META: Record<
@@ -52,7 +52,6 @@ const STORE_LINK =
   }) || `https://play.google.com/store/apps/details?id=${ANDROID_PACKAGE}`;
 
 export default function Home() {
-  const insets = useSafeAreaInsets();
   const router = useRouter();
 
   const [topics, setTopics] = useState<Topic[]>([]);
@@ -112,13 +111,8 @@ export default function Home() {
   }
 
   return (
-  
-  // IMPORTANT: exclude "top" so this SafeAreaView doesn't paint the status area white
-    <SafeAreaView className="flex-1 bg-white" edges={["bottom", "left", "right"]}>
-      {/* Paint the transparent status-bar inset */}
-      <View style={{ height: insets.top, backgroundColor: "#4F46E5" }} />
-
-
+    // Now that the status bar is opaque, include the top safe area
+    <SafeAreaView className="flex-1 bg-white" edges={["top", "bottom", "left", "right"]}>
       {/* Header */}
       <View className="px-6 pt-6 pb-6 bg-indigo-600 rounded-b-3xl">
         <Text className="text-3xl font-bold text-white">Explore Vocabulary</Text>
