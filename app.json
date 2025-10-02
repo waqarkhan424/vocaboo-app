@@ -23,6 +23,11 @@
       "package": "com.waqar_424.vocabooapp",
       "versionCode": 8
     },
+    "androidStatusBar": {
+      "barStyle": "light-content",
+      "backgroundColor": "transparent",
+      "translucent": true
+    },
     "web": {
       "output": "static",
       "favicon": "./assets/images/favicon.png"
